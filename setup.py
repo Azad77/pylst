@@ -1,58 +1,66 @@
-#!/usr/bin/env python
-
-"""The setup script."""
-
-import io
-from os import path as op
 from setuptools import setup, find_packages
+import pathlib
 
-with open('README.md') as readme_file:
-    readme = readme_file.read()
+# Define metadata
+PACKAGE_NAME = "pylst"
+VERSION = "0.0.2"
+AUTHOR = "Azad Rasul"
+AUTHOR_EMAIL = "azad.rasul@soran.edu.iq"
+DESCRIPTION = "A Python package for processing and visualizing Landsat LST data."
+URL = "https://github.com/pylst/lst"
+LICENSE = "MIT"
 
-here = op.abspath(op.dirname(__file__))
+# Set the current directory as the base path
+here = pathlib.Path(__file__).parent.resolve()
 
-# get the dependencies and installs
-with io.open(op.join(here, "requirements.txt"), encoding="utf-8") as f:
-    all_reqs = f.read().split("\n")
+# Read the contents of README.md for the long description
+long_description = (here / "README.md").read_text(encoding="utf-8")
 
-install_requires = [x.strip() for x in all_reqs if "git+" not in x]
-dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" not in x]
-
-requirements = [ ]
-
-setup_requirements = [ ]
-
-test_requirements = [ ]
-
+# Setup configuration
 setup(
-    author="Azad Rasul",
-    author_email='azad.rasul@soran.edu.iq',
-    python_requires='>=3.7',
+    name=PACKAGE_NAME,
+    version=VERSION,
+    description=DESCRIPTION,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    license=LICENSE,
+    
+    # Specify the type of long description (Markdown)
+    long_description_content_type="text/markdown",
+    long_description=long_description,
+    
+    # Project URL
+    url=URL,
+    
+    # Find all packages in the project
+    packages=find_packages(),
+    
+    # Dependencies required for the package
+    install_requires=["numpy>=1.0",
+                      "pandas>=1.4.4",
+                      "rasterio>=1.0.0",
+                      "GDAL>=2.0.0",
+                      "geemap>=0.30.4",
+                      "ee>=0.2",
+                      "opencv-python>=4.7.0.72",
+                      "scikit-learn>=1.0.2",
+                      "matplotlib>=3.5.2",
+                      
+                      
+                      ],
+    
+    # Keywords associated with the package
+    keywords="Land Surface Temperature (LST), Image processing, Landsat, Remote Sensing, Thermal Satellite images",
+    
+    # Classification for the pacckage
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Science/Research",
+        "Topic :: Software Development :: Build Tools",
+        "Programming Language :: Python :: 3.9",
+        "Natural Language :: English",
     ],
-    description="A_Python_Package_for_processing_LST_data.",
-    install_requires=install_requires,
-    dependency_links=dependency_links,
-    license="MIT license",
-    long_description=readme,
-    long_description_content_type='text/markdown',
-    include_package_data=True,
-    keywords='pylst',
-    name='pylst',
-    packages=find_packages(include=['pylst', 'pylst.*']),
-    setup_requires=setup_requirements,
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/Azad77/pylst',
-    version='0.0.1',
-    zip_safe=False,
+    
+    # Python version required
+    python_requires=">=3.9",
 )
