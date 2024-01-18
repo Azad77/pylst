@@ -49,4 +49,4 @@ nav:
     - Changelog: changelog.md
     - Report Issues: https://github.com/Azad77/pylst/issues
     - API Reference:
-          - pylst module: pylst.md
+          - pylst module: README.md
