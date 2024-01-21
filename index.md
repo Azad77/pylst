@@ -1,20 +1,23 @@
-# Welcome to pylst
+# pylst
 
+# Shields for version badges
+[![PyPI Version](https://img.shields.io/pypi/v/pylst.svg)](https://pypi.python.org/pypi/pylst)
 
-[![image](https://img.shields.io/pypi/v/pylst.svg)](https://pypi.python.org/pypi/pylst)
+**pylst is a Python package designed for processing and visualizing Landsat Land Surface Temperature (LST) data.**
 
-
-**A_Python_Package_for_processing_LST_data.**
-
-
--   Free software: MIT license
--   Documentation: <https://Azad77.github.io/pylst>
-    
+- Free software: MIT license
+- Documentation: [pylst Documentation](https://Azad77.github.io/pylst)
 
 ## Features
 
--   TODO
+- Comprehensive processing tools for Landsat LST data.
+- Flexible visualization methods for analyzing temperature data.
+- Easy-to-use functions to compute and manipulate temperature-related indices.
 
-## Credits
+## Getting Started
+# Installation
 
-This package was created with [Cookiecutter](https://github.com/cookiecutter/cookiecutter) and the [giswqs/pypackage](https://github.com/giswqs/pypackage) project template.
+To install pylst, you can use `pip`:
+
+```bash
+pip install pylst
