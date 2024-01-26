@@ -19,5 +19,9 @@ To install pylst, you can use `pip`:
 
 ```bash
 pip install pylst
-# Usage
-See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some examples.
+```
+
+
+
+# Usage.
+See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some examples
