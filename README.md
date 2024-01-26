@@ -13,7 +13,7 @@
 - Flexible visualization methods for analyzing temperature data.
 - Easy-to-use functions to compute and manipulate temperature-related indices.
 
-# Installation
+## Installation
 
 To install pylst, you can use `pip`:
 
@@ -23,5 +23,5 @@ pip install pylst
 
 
 
-# Usage.
+## Usage.
 See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some examples
