@@ -27,9 +27,11 @@ pip install pylst
 See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some examples
 
 ## Sub-packages:
-ml: Contains utilities for machine learning tasks.
-normalization: Offers tools for data normalization.
-open: Includes functions for opening and reading data.
-spatial-analysis: Provides tools for spatial analysis.
-temperature: Contains functions for computing and manipulating temperature data.
-visualization: Includes tools for visualizing data.
+
+- **ml**: Contains utilities for machine learning tasks.
+- **normalization**: Offers tools for data normalization.
+- **open**: Includes functions for opening and reading data.
+- **spatial-analysis**: Provides tools for spatial analysis.
+- **temperature**: Contains functions for computing and manipulating temperature data.
+- **visualization**: Includes tools for visualizing data.
+
