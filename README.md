@@ -35,8 +35,6 @@ See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some 
 - **temperature**: Contains functions for computing and manipulating temperature data.
 - **visualization**: Includes tools for visualizing data.
 
-![Downloads](https://img.shields.io/pypi/dm/pylst)
-
-![Total Downloads](https://pepy.tech/badge/pylst)
+![Downloads](https://img.shields.io/pypi/dm/pylst) ![Total Downloads](https://pepy.tech/badge/pylst)
 
 
