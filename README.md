@@ -37,5 +37,6 @@ See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some 
 
 ![Downloads](https://img.shields.io/pypi/dm/pylst)
 
-![Total Downloads](https://img.shields.io/pypi/dt/pylst)
+![Total Downloads](https://pepy.tech/badge/pylst)
+
 
