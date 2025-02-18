@@ -36,7 +36,7 @@ See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some 
 - **visualization**: Includes tools for visualizing data.
 
 ![Downloads](https://img.shields.io/pypi/dm/pylst) ![Total Downloads](https://pepy.tech/badge/pylst)
-## Projects Using pylst
+#### Contribute by reporting issues or suggesting enhancements!
 
 
 
