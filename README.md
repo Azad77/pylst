@@ -38,6 +38,9 @@ See [tutorial](https://github.com/Azad77/pylst/tree/main/tutorial)/ to see some 
 ![Downloads](https://img.shields.io/pypi/dm/pylst) ![Total Downloads](https://pepy.tech/badge/pylst)
 #### Contribute by reporting issues or suggesting enhancements!
 
+## How to Cite
+Rasul, A. (2024). pylst: A Python package for Landsat LST data processing
+
 
 
 
