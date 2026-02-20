@@ -1,37 +1,71 @@
-# __init__.py
+from __future__ import annotations
 
-# Importing specific functionalities from different modules within the package
+__version__ = "0.0.3"
+# pylst/__init__.py
+"""
+pylst
+=====
 
-# Importing from the 'pylst' module
+A Python package for processing, analyzing and visualizing Landsat-derived
+Land Surface Temperature (LST) data.
+"""
+
+
+# ─── Core ────────────────────────────────────────────────────────────────
+from .algorithms import LSTAlgorithmRunner
+
+# ─── LST & Emissivity Computation ────────────────────────────────────────
 from .pylst import emissivity
 
-# Importing visualization functions from the 'visualization' module
-from .visualization import (
-    plot_data,        # Function to plot data
-    show,             # Function to show visualization
-    rastshow,         # Function to show raster visualization
-    create_interactive_map,  # Function to create interactive map
-    histogram_equalization   # Function for histogram equalization
+# ─── Utilities & Indices ─────────────────────────────────────────────────
+from .utils import (
+    generate_mask,
+    compute_ndvi,
+    fractional_vegetation_cover,
+    cavity_effect,
+    rescale_band,
 )
 
-# Importing spatial analysis functions from the 'spatial_analysis' module
-from .spatial_analysis.zonstat import calculate_zs  # Zonal statistics
-from .spatial_analysis.changedet import analyze_images  # Change Detection
-
-# Importing image handling classes and functions from the 'open' module
+# ─── Data Access & I/O ───────────────────────────────────────────────────
 from .open import (
-    Opener,        # Class for opening image data
-    remopener,     # Class for opening remote image data
-    download_images  # Function to download image collection images
+    remopener,
+    download_images,
 )
 
-# Importing normalization function from the 'normalization' module
-from .normalization import nrs  # Normalization Ratio Scale function
+# ─── Visualization ───────────────────────────────────────────────────────
+from .visualization import (
+    rastshow)
 
-# Importing machine learning functions from the 'ml' module
-from .ml import (
-    train_regression_model,      # Function to train regression model
-    train_classification_model,  # Function to train classification model
-    train_test_split,            # Function to split data for training and testing
-    accuracy_score               # Function to compute accuracy score
-)
+# ─── Spatial Analysis ────────────────────────────────────────────────────
+# spatial_analysis has extra dependencies (e.g. geopandas) that are not
+# always required by users of the core library. Import lazily so that
+# installing pylst doesn't force geopandas installation for everyone.
+try:
+    from .spatial_analysis.zonstat import calculate_zs
+    from .spatial_analysis.changedet import analyze_images
+except ImportError:  # pragma: no cover - optional dependency
+    calculate_zs = None  # type: ignore
+    analyze_images = None  # type: ignore
+
+# ─── Normalization ───────────────────────────────────────────────────────
+from .normalization import nrs
+
+
+# ─── Public API ──────────────────────────────────────────────────────────
+__all__ = [
+    "LSTAlgorithmRunner",
+    "emissivity",
+    "generate_mask",
+    "compute_ndvi",
+    "fractional_vegetation_cover",
+    "cavity_effect",
+    "rescale_band",
+    "remopener",
+    "download_images",
+    "rastshow",
+    "histogram_equalization",
+    "calculate_zs",
+    "analyze_images",
+    "nrs",
+
+]

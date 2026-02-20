@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools >= 61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylst"
+version = "0.1.0"                               # ← updated here
+description = "A Python package for processing and visualizing Landsat LST data."
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Azad Rasul", email = "azad.rasul@soran.edu.iq"}
+]
+keywords = [
+    "Land Surface Temperature",
+    "LST",
+    "Image processing",
+    "Landsat",
+    "Remote Sensing",
+    "Thermal Satellite images"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Natural Language :: English"
+]
+
+dependencies = [
+    "numpy >= 1.20",
+    "pandas >= 1.4.4",
+    "rasterio >= 1.3",
+    "geemap >= 0.30.4",
+    "earthengine-api >= 0.2",
+    "opencv-python >= 4.7.0.72",
+    "scikit-learn >= 1.2",
+    "matplotlib >= 3.7"
+]
+
+[project.urls]
+Homepage = "https://github.com/pylst/lst"
+Repository = "https://github.com/pylst/lst.git"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pylst*"]

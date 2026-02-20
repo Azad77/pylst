@@ -1,60 +1,78 @@
-# -*- coding: utf-8 -*-
-"""
-@author: Azad Rasul
-"""
 # pylst/visualization/plotter.py
-import matplotlib.pyplot as plt
-import cv2
+"""
+Plotting utilities for raster data.
+Author: Azad Rasul
+"""
+
+try:
+    import matplotlib.pyplot as plt
+except Exception:  # pragma: no cover - may fail due to numpy version conflict
+    plt = None
+
 import rasterio
-from rasterio.plot import show
+import os
 
-def plot_data(data):
-    # Function to plot data using matplotlib
-    plt.plot(data)
-    plt.show()
 
-from localtileserver import TileClient, get_leaflet_tile_layer
-from ipyleaflet import Map
+def rastshow(
+    path,
+    title=None,
+    colorbar_label="Value",
+    cmap="viridis",
+    figsize=(8, 6),
+    vmin=None,
+    vmax=None,
+    xlabel="Longitude",
+    ylabel="Latitude",
+    **imshow_kwargs
+):
+    """
+    Display a single-band GeoTIFF raster using matplotlib.
 
-def create_interactive_map(tif_path):
-    # Create a TileClient and get the tile layer
-    client = TileClient(tif_path)
-    layer = get_leaflet_tile_layer(client)
+    Parameters
+    ----------
+    path : str
+        Path to the .tif file
+    title : str, optional
+    colorbar_label : str, optional
+    cmap : str, optional
+    figsize : tuple, optional
+    vmin, vmax : float, optional
+    xlabel, ylabel : str, optional
+    **imshow_kwargs : dict
+        Additional kwargs passed to ax.imshow()
 
-    # Create a map centered around the data
-    m = Map(center=client.center(), zoom=client.default_zoom)
+    Returns
+    -------
+    None  (displays the plot)
+    """
+    if plt is None:
+        raise ImportError(
+            "matplotlib is required for rastshow(). "
+            "Install with: pip install matplotlib"
+        )
     
-    # Add the tile layer to the map
-    m.add(layer)
-    
-    return m
+    with rasterio.open(path) as src:
+        data = src.read(1)  # first band
+        extent = [src.bounds.left, src.bounds.right,
+                  src.bounds.bottom, src.bounds.top]
 
+    fig, ax = plt.subplots(figsize=figsize)
+    im = ax.imshow(
+        data,
+        cmap=cmap,
+        extent=extent,
+        origin="upper",           # rasterio usually top-left origin
+        vmin=vmin,
+        vmax=vmax,
+        **imshow_kwargs
+    )
 
+    ax.set_title(title or os.path.basename(path))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
 
-def rastshow(path_to_raster, title='', colorbar_label='', figsize='', xlabel='', ylabel='', cmap='viridis', extent=None):
-    # Open the raster dataset
-    with rasterio.open(path_to_raster) as src:
-        # Display the raster data
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
-        show(src, ax=ax, title=title, cmap=cmap, extent=extent)
-        plt.colorbar(ax=ax, mappable=ax.images[0], label=colorbar_label)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        plt.show()
+    plt.colorbar(im, ax=ax, label=colorbar_label)
+    plt.tight_layout()
 
-def histogram_equalization(image_path):
-    # Function for histogram equalization using OpenCV
-    img = cv2.imread(image_path, 0)
-    equ = cv2.equalizeHist(img)
-
-    # Display original and equalized images side by side
-    plt.subplot(1, 2, 1)
-    plt.imshow(img, cmap='gray')
-    plt.title('Original Image')
-
-    plt.subplot(1, 2, 2)
-    plt.imshow(equ, cmap='gray')
-    plt.title('Equalized Image')
-
-    plt.show()
-
+    plt.show()   # comment out if you want to return fig instead
+    # return fig     ← alternative: return figure for testing / saving

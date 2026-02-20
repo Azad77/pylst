@@ -1,48 +1,87 @@
 import unittest
 import numpy as np
+from numpy.testing import assert_array_almost_equal, assert_allclose
 
-from pylst.emissivity.emissivity import ComputeMonoWindowEmissivity, ComputeEmissivityGopinadh
+from pylst.emissivity.registry import ComputeMonoWindowEmissivity, ComputeEmissivityGopinadh
 
-# Test class for testing emissivity computation methods
+
 class TestEmissivityComputation(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        # Setting up a sample NDVI and red band with all zeros
-        #cls.sample_ndvi = 'band_4_red_Landsat.tif'
-        #cls.sample_red_band = 'band_4_red_Landsat.tif'
-        # Sample NDVI and red band data (replace with your actual data)
-        self.sample_ndvi = np.array([[0.1, 0.2], [0.3, 0.4]])
-        self.sample_red_band = np.array([[0.5, 0.6], [0.7, 0.8]])
+    def setUpClass(cls):
+        cls.mono = ComputeMonoWindowEmissivity()
+        cls.gopinadh = ComputeEmissivityGopinadh()
 
-    # Test whether the methods return a tuple
-    def test_method_returns_tuple(self):
-        # Instantiate the classes for different emissivity computation methods
-        mono_window_emissivity = ComputeMonoWindowEmissivity()
-        #nbem_emissivity = ComputeEmissivityNBEM()
-        gopinadh_emissivity = ComputeEmissivityGopinadh()
+        # Realistic small NDVI array (typical Landsat range: -0.2 water → 0.8 dense veg)
+        cls.ndvi = np.array([
+            [-0.1, 0.15, 0.45],
+            [0.65, 0.82, -0.05],
+            [0.30, np.nan, 0.55]
+        ], dtype=np.float32)
 
-        # Compute emissivity for the sample data using different methods
-        output_mono_window = mono_window_emissivity(ndvi=self.sample_ndvi, red_band=self.sample_red_band)
-        #output_nbem = nbem_emissivity(ndvi=self.sample_ndvi, red_band=self.sample_red_band)
-        output_gopinadh = gopinadh_emissivity(ndvi=self.sample_ndvi)
+        # Dummy red band (reflectance 0–1 range, same shape as NDVI)
+        cls.red_band = np.array([
+            [0.12, 0.08, 0.04],
+            [0.03, 0.02, 0.15],
+            [0.06, 0.10, 0.05]
+        ], dtype=np.float32)
 
-        # Assert that the outputs are tuples
-        self.assertIsInstance(output_mono_window, tuple)
-        #self.assertIsInstance(output_nbem, tuple)
-        self.assertIsInstance(output_gopinadh, tuple)
+    def test_mono_returns_tuple_and_correct_length(self):
+        result = self.mono(ndvi=self.ndvi, red_band=self.red_band)
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 2)  # Mono-window typically returns 2 items
 
-    # Test whether the output sizes match the input sizes
-    def test_output_and_input_size_equal(self):
-        # Instantiate the class for mono-window emissivity computation method
-        mono_window_emissivity = ComputeMonoWindowEmissivity()
+        emiss = result[0]
+        self.assertIsInstance(emiss, np.ndarray)
+        self.assertEqual(emiss.shape, self.ndvi.shape)
 
-        # Compute emissivity for the sample data using the mono-window method
-        output = mono_window_emissivity(ndvi=self.sample_ndvi, red_band=self.sample_red_band)
+    def test_gopinadh_returns_tuple_and_correct_length(self):
+        result = self.gopinadh(ndvi=self.ndvi)
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 2)  # Fixed: now matches actual return (2 items)
 
-        # Assert that the output shapes match the input shapes
-        self.assertEqual(self.sample_ndvi.shape, output[0].shape)
-        self.assertEqual(self.sample_ndvi.shape, output[1].shape)
+        emiss = result[0]
+        self.assertIsInstance(emiss, np.ndarray)
+        self.assertEqual(emiss.shape, self.ndvi.shape)
 
-# Run the tests if this script is executed directly
+    def test_mono_output_shape_matches_input(self):
+        emiss, *_ = self.mono(ndvi=self.ndvi, red_band=self.red_band)
+        self.assertEqual(self.ndvi.shape, emiss.shape)
+
+    def test_gopinadh_output_shape_matches_input(self):
+        emiss, *_ = self.gopinadh(ndvi=self.ndvi)
+        self.assertEqual(self.ndvi.shape, emiss.shape)
+
+    def test_mono_emissivity_values_in_reasonable_range(self):
+        emiss, *_ = self.mono(ndvi=self.ndvi, red_band=self.red_band)
+        # Typical NDVI-based emissivity: ~0.93 bare soil → ~0.98–0.99 vegetation/water
+        valid = emiss[~np.isnan(emiss)]
+        self.assertTrue(np.all(valid >= 0.90))
+        self.assertTrue(np.all(valid <= 0.995))
+
+    def test_gopinadh_emissivity_values_in_reasonable_range(self):
+        emiss, *_ = self.gopinadh(ndvi=self.ndvi)
+        valid = emiss[~np.isnan(emiss)]
+        self.assertTrue(np.all(valid >= 0.90))
+        self.assertTrue(np.all(valid <= 0.995))
+
+    def test_handles_nan_propagation(self):
+        # Position (2,1) is NaN in NDVI → should propagate to output
+        emiss_mono, *_ = self.mono(ndvi=self.ndvi, red_band=self.red_band)
+        emiss_gop, *_ = self.gopinadh(ndvi=self.ndvi)
+
+        self.assertTrue(np.isnan(emiss_mono[2, 1]))
+        self.assertTrue(np.isnan(emiss_gop[2, 1]))
+
+    def test_gopinadh_known_ndvi_values(self):
+        # Simple test array with known NDVI thresholds
+        ndvi_test = np.array([[0.0, 0.2, 0.5, 0.8]], dtype=np.float32)
+        emiss, *_ = self.gopinadh(ndvi=ndvi_test)
+
+        # Rough check: emissivity should generally increase with NDVI
+        self.assertLess(emiss[0, 0], emiss[0, 3])  # low NDVI → lower emissivity
+
+        # Typical high-vegetation value check (adjust tolerance if needed)
+        assert_allclose(emiss[0, 3], 0.985, atol=0.015)
+
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(argv=[''], exit=False, verbosity=2)

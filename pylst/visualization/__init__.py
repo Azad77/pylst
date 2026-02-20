@@ -1,8 +1,14 @@
 # pylst/visualization/__init__.py
+"""
+Visualization submodule for pylst.
 
-#from .plotter import plot_data
-from pylst.visualization.plotter import plot_data
-from pylst.visualization.plotter import show
-from pylst.visualization.plotter import rastshow
-from .plotter import create_interactive_map, histogram_equalization
+Provides:
+- rastshow(): Static raster plots (matplotlib + rasterio)
+- create_interactive_map(): Interactive maps (ipyleaflet + localtileserver)
+"""
 
+from .plotter import rastshow
+
+__all__ = [
+    "rastshow"
+]

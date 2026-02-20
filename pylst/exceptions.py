@@ -1,49 +1,48 @@
-import numpy as np
-
+# pylst/exceptions.py
+from __future__ import annotations
+from typing import Any
 
 __all__ = [
+    "PylstError",
     "InvalidMaskError",
-    "InputShapesNotEqual",
-    "InvalidMethodRequested",
+    "InputShapesMismatchError",
+    "InvalidMethodError",
+    "MissingRequiredArgumentError",
+    "assert_required_keywords_provided",
 ]
 
-
-class InvalidMaskError(Exception):
-    """Invalid mask error"""
-
+class PylstError(Exception):
+    """Base class for all pylst-specific exceptions."""
     pass
 
-
-class KeywordArgumentError(Exception):
-    """Required keyword argument missing"""
-
+class InvalidMaskError(PylstError):
+    """Raised when a mask array is invalid (wrong shape, dtype, etc.)."""
     pass
 
-
-class InputShapesNotEqual(Exception):
-    """Input images don't have the same shape"""
-
+class InputShapesMismatchError(PylstError, ValueError):
+    """Raised when input arrays (bands, masks, etc.) have mismatched shapes."""
     pass
 
-
-class InvalidMethodRequested(Exception):
-    """Invalid method/algorithm requested"""
-
+class InvalidMethodError(PylstError, ValueError):
+    """Raised when an invalid or unsupported algorithm/method is requested."""
     pass
 
+class MissingRequiredArgumentError(PylstError, TypeError):
+    """Raised when a required keyword argument is missing or None."""
+    pass
 
-def assert_required_keywords_provided(keywords, **kwargs):
+def assert_required_keywords_provided(
+    required: list[str] | tuple[str, ...],
+    **kwargs: Any,
+) -> None:
     """
-    This method checks if all the required keyword arguments to complete a computation
-        are provided in **kwargs
-    Args:
-        keywords ([list[str]], optional): Required keywords.
-    Raises:
-        KeywordArgumentError: custom exception
+    Validate that all required keyword arguments are provided and not None.
+
+    Raises MissingRequiredArgumentError if any are missing.
     """
-    for keyword in keywords:
-        if keyword not in kwargs or kwargs[keyword] is None:
-            message = (
-                f"Keyword argument {keyword} must be provided for this computation "
-            )
-            raise KeywordArgumentError(message)
+    missing = [kw for kw in required if kw not in kwargs or kwargs[kw] is None]
+    if missing:
+        raise MissingRequiredArgumentError(
+            f"Missing or None required argument(s): {', '.join(missing)}. "
+            f"Required: {', '.join(required)}"
+        )

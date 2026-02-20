@@ -1,19 +1,47 @@
-# Importing necessary components from different modules
+# pylst/temperature/__init__.py
+from __future__ import annotations
 
-# Importing default algorithms for temperature computation
-from .temperature import default_algorithms
+# Core LST & Brightness Temperature
+from .brightness_temperature import BrightnessTemperatureCalculator
 
-# Importing the BrightnessTemperatureLandsat class for brightness temperature calculation
-from .brightness_temperature import BrightnessTemperatureLandsat
+# If you want, alias for Landsat usage (instead of a separate class)
+BrightnessTemperatureLandsat = BrightnessTemperatureCalculator
 
-# Importing the MonoWindowLST algorithm for mono-window land surface temperature calculation
+# LST runner / registry
+from .lst_registry import lst_runner, LSTRunner
+
+# Algorithms
 from .algorithms.mono_window import MonoWindowLST
-
-# Importing split window algorithms for land surface temperature calculation
-from .algorithms.split_window.algorithms import (
+from .algorithms.split_window import (
+    SplitWindowSobrino1993LST,
     SplitWindowJiminezMunozLST,
     SplitWindowKerrLST,
     SplitWindowMcMillinLST,
     SplitWindowPriceLST,
-    SplitWindowSobrino1993LST,
 )
+
+# Default algorithms dictionary
+default_algorithms = {
+    "single_window": MonoWindowLST,
+    "split_window": {
+        "sobrino-1993": SplitWindowSobrino1993LST,
+        "jiminez-munoz": SplitWindowJiminezMunozLST,
+        "kerr": SplitWindowKerrLST,
+        "mcmillin": SplitWindowMcMillinLST,
+        "price": SplitWindowPriceLST,
+    },
+}
+
+__all__ = [
+    "BrightnessTemperatureCalculator",
+    "BrightnessTemperatureLandsat",
+    "lst_runner",
+    "LSTRunner",
+    "MonoWindowLST",
+    "SplitWindowSobrino1993LST",
+    "SplitWindowJiminezMunozLST",
+    "SplitWindowKerrLST",
+    "SplitWindowMcMillinLST",
+    "SplitWindowPriceLST",
+    "default_algorithms",
+]

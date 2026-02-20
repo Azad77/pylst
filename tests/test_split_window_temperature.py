@@ -139,4 +139,5 @@ class TestSplitWindowPriceLST(unittest.TestCase):
 
 # Run the tests if this file is executed directly
 if __name__ == "__main__":
-    unittest.main()
+    # avoid issues when running inside interactive environments like Jupyter
+    unittest.main(argv=[""], verbosity=2, exit=False)
